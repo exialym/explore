@@ -19,6 +19,14 @@ class App extends Component {
       activeIndex: parseInt(e.target.value, 10),
     });
   }
+  handleTabClick(indexs) {
+    console.log(indexs);
+  }
+  componentDidMount(){
+    //使用findDOMNode可以获取参数组件的render方法真实渲染出的真实DOM
+    const dom = ReactDOM.findDOMNode(this);
+    console.log(dom);
+  }
 
   render() {
     // 这里切换 select 中的选项是没有作用的，因为使用的是 defaultActiveIndex，
@@ -33,7 +41,7 @@ class App extends Component {
             <option value="2">Tab 3</option>
           </select>
         </div>
-        <Tabs activeIndex={this.state.activeIndex} className="tabs-bar">
+        <Tabs defaultActiveIndex={this.state.activeIndex} className="tabs-bar" onChange={this.handleTabClick}>
           <TabPane order="0" tab={'Tab 1'}>第一个 Tab 里的内容</TabPane>
           <TabPane order="1" tab={'Tab 2'}>第二个 Tab 里的内容</TabPane>
           <TabPane order="2" tab={'Tab 3'}>第三个 Tab 里的内容</TabPane>

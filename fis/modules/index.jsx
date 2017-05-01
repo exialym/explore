@@ -6,5 +6,8 @@ import App from './Tab/App'
 
 render(
   <App />,
-  document.getElementById('root')
+  document.getElementById('root'),
+  function () {
+    console.log("tab done");
+  }
 )
