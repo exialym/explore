@@ -19,6 +19,7 @@ class App extends Component {
       activeIndex: parseInt(e.target.value, 10),
     });
   }
+  //这里这个方法，通过Tabs一直传到了TabNav，在TabNav点击时触发，实现了子组件向父组件通信，本质上是在执行回调函数
   handleTabClick(indexs) {
     console.log(indexs);
   }
