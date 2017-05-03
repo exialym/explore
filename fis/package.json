@@ -11,7 +11,6 @@
   },
   "devDependencies": {
     "fis-parser-babel-5.x": "^1.4.0",
-    "fis-parser-node-sass": "^1.0.1",
     "fis3-hook-commonjs": "^0.1.25",
     "fis3-hook-node_modules": "^2.2.8",
     "fis3-packager-deps-pack": "^0.1.2",

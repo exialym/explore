@@ -16,12 +16,12 @@ fis.match('{/modules/**.js,*.jsx}', {
   }),
   rExt: '.js'
 });
-fis.match('**/*.scss', {
-  rExt: '.css', // from .scss to .css
-  parser: fis.plugin('node-sass', {
-    //fis-parser-node-sass option
-  })
-});
+// fis.match('**/*.scss', {
+//   rExt: '.css', // from .scss to .css
+//   parser: fis.plugin('node-sass', {
+//     //fis-parser-node-sass option
+//   })
+// });
 
 // 改用 npm 方案，而不是用 fis-components
 fis.hook('node_modules');
