@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom';
 import Tabs from './Tabs';
 import TabPane from './TabPane';
 
+
+
 class App extends Component {
   constructor(props) {
     super(props);
@@ -28,6 +30,7 @@ class App extends Component {
     const dom = ReactDOM.findDOMNode(this);
     console.log(dom);
   }
+
 
   render() {
     // 这里切换 select 中的选项是没有作用的，因为使用的是 defaultActiveIndex，
