@@ -52,6 +52,8 @@ class Demo extends Component {
 const Wdemo = MyContainer(Demo);
 
 /***********************属性代理抽象state****************************/
+// 这是对高阶组件的一种利用，将所有状态提升到高阶组件中，被包装的组件就是一个纯展示组件
+// 一定程度上可以说是逻辑与视图分离
 const MyContainer1 = (WrappedComponent) =>
   class extends Component {
     constructor(props) {
@@ -66,6 +68,12 @@ const MyContainer1 = (WrappedComponent) =>
         name: event.target.value,
       })
     }
+    componentDidMount() {
+      console.log("HOC did Mount");
+    }
+    componentWillMount() {
+      console.log("HOC will Mount");
+    }
     render() {
       const newProps = {
         name: {
@@ -73,10 +81,24 @@ const MyContainer1 = (WrappedComponent) =>
           onChange: this.onNameChange,
         },
       }
-      return <WrappedComponent {...this.props} {...newProps} />;
+      return (
+        <div>
+          <span>高阶组件抽象state：{this.state.name}</span>
+          <WrappedComponent {...this.props} {...newProps} />
+        </div>);
     }
   }
 class MyInput extends Component {
+  //HOC will Mount
+  //Wrapped will Mount
+  //Wrapped did Mount
+  //HOC did Mount
+  componentDidMount() {
+    console.log("Wrapped did Mount");
+  }
+  componentWillMount() {
+    console.log("Wrapped will Mount");
+  }
   render() {
     return <input name="name" {...this.props.name} />;
   }
