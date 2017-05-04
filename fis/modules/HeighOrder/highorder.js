@@ -27,7 +27,7 @@ const MyContainer = (WrappedComponent) =>
     render() {
       //我们可以通过高阶组件像里面的组件传递props
       const props = Object.assign({}, this.props, {
-        //这个特别的ref属性是一个函数，在WrappedComponent被渲染时，会得到一个指向WrappedComponent实例的参数
+        //这个特别的ref属性是一个函数，在WrappedComponent被渲染时，这个高阶组件中的函数会得到一个指向WrappedComponent实例的参数
         //ref在WrappedComponent的props里并不能直接访问
         ref: this.proc.bind(this),
         newP:"newwPP"
@@ -104,5 +104,23 @@ class MyInput extends Component {
   }
 }
 const MyInputWapped = MyContainer1(MyInput);
+
+/**********************************************反向继承*****************/
+//高阶组件继承了被包装的组件，可以控制被包装组件的渲染过程
+const MyContainer2 = (WrappedComponent) =>
+  class extends WrappedComponent {
+    render() {
+      const elementsTree = super.render();
+      let newProps = {};
+      if (elementsTree && elementsTree.type === 'input') {
+        newProps = {
+          value: 'may the force be with you'
+        };
+      }
+      const props = Object.assign({}, elementsTree.props, newProps);
+      const newElementsTree = React.cloneElement(elementsTree, props, elementsTree.props.children);
+      return newElementsTree;
+    }
+  }
 
 export default HighOrder;
