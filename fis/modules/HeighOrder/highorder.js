@@ -1,5 +1,6 @@
 import React, { Component, PropTypes, cloneElement } from 'react';
 import ReactDOM from 'react-dom';
+import { is } from 'immutable';
 
 
 
@@ -56,6 +57,8 @@ const Wdemo = MyContainer(Demo);
 // 一定程度上可以说是逻辑与视图分离
 const MyContainer1 = (WrappedComponent) =>
   class extends Component {
+    //解决高阶组件在调试中显示名称的问题
+    //static displayName = `HOC(${getDisplayName(WrappedComponent)})`;
     constructor(props) {
       super(props);
       this.state = {
@@ -122,5 +125,29 @@ const MyContainer2 = (WrappedComponent) =>
       return newElementsTree;
     }
   }
+/***********************使用immutable在shouldComponentUpdate进行对prop和state的检查，提升性能****************************/
+class App extends Component {
+  shouldComponentUpdate(nextProps, nextState) {
+    const thisProps = this.props || {};
+    const thisState = this.state || {};
+    if (Object.keys(thisProps).length !== Object.keys(nextProps).length ||
+      Object.keys(thisState).length !== Object.keys(nextState).length) {
+      return true;
+    }
+    for (const key in nextProps) {
+      if (nextProps.hasOwnProperty(key) &&
+        !is(thisProps[key], nextProps[key])) {
+        return true;
+      }
+    }
+    for (const key in nextState) {
+      if (nextState.hasOwnProperty(key) &&
+        !is(thisState[key], nextState[key])) {
+        return true;
+      }
+    }
+    return false;
+  }
+}
 
 export default HighOrder;
