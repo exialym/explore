@@ -2,33 +2,8 @@
  * Created by exialym on 2017/5/5 0005.
  */
 import React, { Component, PropTypes, cloneElement } from 'react';
-//import AnimateGroup from 'react-smooth';
+import {Motion, spring} from 'react-motion';
 
-
-const appear = {
-  from: 0,
-  to: 1,
-  attributeName: 'opacity',
-};
-
-const leave = {
-  steps: [{
-    style: {
-      transform: 'translateX(0)',
-    },
-  }, {
-    duration: 1000,
-    style: {
-      transform: 'translateX(300)',
-      height: 50,
-    },
-  }, {
-    duration: 2000,
-    style: {
-      height: 0,
-    },
-  }]
-};
 class Animation extends Component {
   // update(done, now) {
   //   if (!this.leaveTime) {
@@ -60,13 +35,42 @@ class Animation extends Component {
 
   render() {
     return (
-      <div></div>
+      <Switch/>
     );
   }
 }
-{/*<AnimateGroup appear={appear} leave={leave}>*/}
-  {/*{ this.props.children }*/}
-{/*</AnimateGroup>*/}
+class Switch extends Component {
+  constructor(props) {
+    super(props);
+    this.handleClick = this.handleClick.bind(this);
+    this.state = {
+      open: false,
+    };
+  }
+  handleClick() {
+    this.setState({
+      open: !this.state.open,
+    });
+  }
+  render() {
+    return (
+      <Motion style={{x: spring(this.state.open ? 50 : 0)}}>
+        {({x}) =>
+          <div className="switch">
+            <div
+              className="switch-block"
+              onClick={this.handleClick}
+              style={{
+                transform: `translate3d(${x}px, 0, 0)`,
+              }}
+            />
+          </div>
+        }
+      </Motion>
+    );
+  }
+}
+
 export default Animation;
 
 

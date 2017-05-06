@@ -36,4 +36,13 @@ ul {
 .tabs-content .tabs-active {
   display: block; }
 
+.switch {
+  width: 100px;
+  height: 50px;
+  background-color: #00C49F; }
+  .switch .switch-block {
+    width: 50%;
+    height: 100%;
+    background-color: #666666; }
+
 /*# sourceMappingURL=style.css.map */
