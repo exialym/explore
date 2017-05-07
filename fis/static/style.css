@@ -11,7 +11,8 @@ ul {
   margin-bottom: 16px; }
 
 .tabs-bar {
-  margin-bottom: 16px; }
+  margin-bottom: 16px;
+  position: relative; }
 .tabs-nav {
   font-size: 14px; }
   .tabs-nav:after, .tabs-nav:before {
@@ -28,7 +29,6 @@ ul {
   color: #666;
   cursor: pointer; }
 .tabs-nav > .tabs-active {
-  border-bottom: 2px solid #00C49F;
   color: #00C49F;
   cursor: default; }
 .tabs-content .tabs-panel {
@@ -44,5 +44,14 @@ ul {
     width: 50%;
     height: 100%;
     background-color: #666666; }
+
+.inkBar {
+  position: absolute;
+  left: 0;
+  bottom: 1px;
+  box-sizing: border-box;
+  height: 2px;
+  background-color: #00C49F;
+  z-index: 1; }
 
 /*# sourceMappingURL=style.css.map */
