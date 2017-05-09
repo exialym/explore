@@ -1,4 +1,5 @@
-//
+/******* createClass是创建自定义组件的入口方法，负责管理生命周期中的getDefaultProps。***/
+// getDefaultProps方法整个生命周期只执行一次，这样所有实例初始化的props将会被共享
 var ReactClass = {
   createClass: function(spec) {
     var Constructor = function(props, context, updater) {
@@ -32,6 +33,7 @@ var ReactClass = {
     },
 };
 
+/*****MOUNTING，负责生命周期中的getInitialState componentWillMount render和componentDidMount****/
 var nextMountID = 1;
 mountComponent: function(transaction, nativeParent, nativeContainerInfo, context) {
   this._context = context;
@@ -118,7 +120,7 @@ performInitialMount: function(renderedElement, nativeParent, nativeContainerInfo
 
 
 
-
+/*****RECEIVE_PROPS：componentWillReceiveProps shouldComponentUpdate componentWillUpdate render和componentDidUpdate****/
 receiveComponent: function(nextElement, transaction, nextContext) {
   var prevElement = this._currentElement;
   var prevContext = this._context;
@@ -215,7 +217,7 @@ _updateRenderedComponent: function(transaction, context) {
 
 
 
-
+/*****UNMOUNTING：负责componentWillUnmount*****/
 unmountComponent: function(safely) {
   if (!this._renderedComponent) {
     return;
@@ -244,4 +246,66 @@ unmountComponent: function(safely) {
   this._rootNodeID = null;
   this._topLevelWrapper = null;
   ReactInstanceMap.remove(inst);
+}
+
+/*******无状态组件*****/
+StatelessComponent.prototype.render = function() {
+  var Component = ReactInstanceMap.get(this)._currentElement.type; //    state
+  var element = Component(this.props, this.context, this.updater);
+  warnIfInvalidElement(Component, element);
+  return element;
+};
+function shouldConstruct(Component) {
+  return Component.prototype && Component.prototype.isReactComponent;
+}
+
+/******setState*****/
+ReactComponent.prototype.setState = function(partialState, callback) {
+  this.updater.enqueueSetState(this, partialState);
+  if (callback) {
+    this.updater.enqueueCallback(this, callback, 'setState');
+  }
+};
+enqueueSetState: function(publicInstance, partialState) {
+  var internalInstance = getInternalInstanceReadyForUpdate(
+  publicInstance,
+  'setState'
+  );
+  if (!internalInstance) {
+    return;
+  }
+  //将现有更新队列合并，并将新的partialState放入队列
+  var queue = internalInstance._pendingStateQueue || (internalInstance._pendingStateQueue = []);
+  queue.push(partialState);
+  enqueueUpdate(internalInstance);
+  },
+//如果存在_pendingElement _pendingStateQueue _pendingForceUpdate，则更新组件
+performUpdateIfNecessary: function(transaction) {
+  if (this._pendingElement != null) {
+    ReactReconciler.receiveComponent(this, this._pendingElement, transaction, this._context);
+  }
+  if (this._pendingStateQueue !== null || this._pendingForceUpdate) {
+    this.updateComponent(transaction, this._currentElement, this._currentElement, this._context, this._context);
+  }
+}
+function enqueueUpdate(component) {
+  ensureInjected();
+// 不是批量更新模式
+  if (!batchingStrategy.isBatchingUpdates) {
+    batchingStrategy.batchedUpdates(enqueueUpdate, component);
+    return; }
+// 是批量更新模式dirtyComponents
+  dirtyComponents.push(component);
+}
+var ReactDefaultBatchingStrategy = {
+  isBatchingUpdates: false,
+  batchedUpdates: function(callback, a, b, c, d, e) {
+    var alreadyBatchingUpdates = ReactDefaultBatchingStrategy.isBatchingUpdates;
+    ReactDefaultBatchingStrategy.isBatchingUpdates = true;
+    if (alreadyBatchingUpdates) {
+      callback(a, b, c, d, e);
+    } else {
+      transaction.perform(callback, null, a, b, c, d, e);
+    }
+    },
 }
