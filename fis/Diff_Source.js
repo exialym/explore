@@ -2,7 +2,8 @@
  * Created by exialym on 2017/5/11 0011.
  */
 
-//tree diff,通过updateDepth对Virtual DOM树进行层级控制，只对相同层级的DOM节点进行比较
+/*************tree diff*********/
+// 通过updateDepth对Virtual DOM树进行层级控制，只对相同层级的DOM节点进行比较
 updateChildren: function(nextNestedChildrenElements, transaction, context) {
   updateDepth++;
   var errorThrown = true;
@@ -22,7 +23,8 @@ updateChildren: function(nextNestedChildrenElements, transaction, context) {
 }
 
 
-//element diff 对同一层级的节点，提供3种节点操作，分别为INSERT_MARKUP，MOVE_EXISTING，REMOVE_NODE
+/**************element diff*********/
+// 对同一层级的节点，提供3种节点操作，分别为INSERT_MARKUP，MOVE_EXISTING，REMOVE_NODE
 function makeInsertMarkup(markup, afterNode, toIndex) {
   return {
     type: ReactMultiChildUpdateTypes.INSERT_MARKUP,
@@ -54,7 +56,7 @@ function makeRemove(child, node) {
   };
 }
 
-//diff
+/**************diff算法的核心*********/
 _updateChildren: function(nextNestedChildrenElements, transaction, context) {
   var prevChildren = this._renderedChildren;
   var removedNodes = {};
@@ -68,6 +70,7 @@ _updateChildren: function(nextNestedChildrenElements, transaction, context) {
   var lastIndex = 0;
   var nextIndex = 0;
   var lastPlacedNode = null;
+  //遍历新的节点集合
   for (name in nextChildren) {
     if (!nextChildren.hasOwnProperty(name)) {
       continue;
@@ -120,7 +123,6 @@ function processQueue(inst, updateQueue) {
 }
 
 moveChild: function(child, afterNode, toIndex, lastIndex) {
-// සࡕጱব ڦۅindex ၭᇀ lastIndexǈሶᅎ޿ۯবۅ
   if (child._mountIndex < lastIndex) {
     return makeMove(child, afterNode, toIndex);
   }
@@ -142,3 +144,98 @@ _mountChildAtIndex: function(child, afterNode, index, transaction, context) {
   child._mountIndex = index;
   return this.createChild(child, afterNode, mountImage);
 },
+
+
+/**************Patch*********/
+// 将Virtual DOM的变化更新到真实DOM上的方法
+processUpdates: function(parentNode, updates) {
+  //遍历更新队列
+  for (var k = 0; k < updates.length; k++) {
+    var update = updates[k];
+    //根据更新队列中元素的更新种类做不同的处理
+    switch (update.type) {
+      //插入新节点
+      case ReactMultiChildUpdateTypes.INSERT_MARKUP:
+        insertLazyTreeChildAt(
+          parentNode,
+          update.content,
+          getNodeAfter(parentNode, update.afterNode)
+        );
+        break;
+      //需要移动的点
+      case ReactMultiChildUpdateTypes.MOVE_EXISTING:
+        moveChild(
+          parentNode,
+          update.fromNode,
+          getNodeAfter(parentNode, update.afterNode)
+        );
+        break;
+      case ReactMultiChildUpdateTypes.SET_MARKUP:
+        setInnerHTML(
+          parentNode,
+          update.content
+        );
+        break;
+      case ReactMultiChildUpdateTypes.TEXT_CONTENT:
+        setTextContent(
+          parentNode,
+          update.content
+        );
+        break;
+      //需要删除的点
+      case ReactMultiChildUpdateTypes.REMOVE_NODE:
+        removeChild(parentNode, update.fromNode);
+        break;
+    }
+  }
+},
+function getNodeAfter(parentNode, node) {
+  if (Array.isArray(node)) {
+    node = node[1];
+  }
+  return node ? node.nextSibling : parentNode.firstChild;
+}
+//插入新节点
+function insertLazyTreeChildAt(parentNode, childTree, referenceNode) {
+  DOMLazyTree.insertTreeBefore(parentNode, childTree, referenceNode);
+}
+//移动已有节点
+function moveChild(parentNode, childNode, referenceNode) {
+  if (Array.isArray(childNode)) {
+    moveDelimitedText(parentNode, childNode[0], childNode[1], referenceNode);
+  } else {
+    insertChildAt(parentNode, childNode, referenceNode);
+  }
+}
+//删除已有节点
+function removeChild(parentNode, childNode) {
+  if (Array.isArray(childNode)) {
+    var closingComment = childNode[1];
+    childNode = childNode[0];
+    removeDelimitedText(parentNode, childNode, closingComment);
+    parentNode.removeChild(closingComment);
+  }
+  parentNode.removeChild(childNode);
+}
+//文本组件要去除openingComment，closingComment得到其中的node
+function moveDelimitedText(parentNode, openingComment, closingComment, referenceNode) {
+  var node = openingComment;
+  while (true) {
+    var nextNode = node.nextSibling;
+    insertChildAt(parentNode, node, referenceNode);
+    if (node === closingComment) {
+      break;
+    }
+    node = nextNode;
+  }
+}
+function removeDelimitedText(parentNode, startNode, closingComment) {
+  while (true) {
+    var node = startNode.nextSibling;
+    if (node === closingComment) {
+      break;
+    } else {
+      parentNode.removeChild(node);
+    }
+  }
+}
