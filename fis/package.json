@@ -4,6 +4,7 @@
   "description": "react + redux 的 todo demo. 供学习参考。",
   "dependencies": {
     "classnames": "^2.2.3",
+    "fetch": "^1.1.0",
     "immutable": "^3.8.1",
     "react": "^15.2.1",
     "react-dom": "^15.2.1",
