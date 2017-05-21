@@ -10,8 +10,11 @@
     "react": "^15.2.1",
     "react-dom": "^15.2.1",
     "react-motion": "^0.5.0",
-    "react-redux": "^4.4.1",
-    "redux": "^3.3.1"
+    "react-redux": "^4.4.8",
+    "react-router": "^4.1.1",
+    "react-router-redux": "^4.0.8",
+    "redux": "^3.6.0",
+    "whatwg-fetch": "^2.0.3"
   },
   "devDependencies": {
     "fis-parser-babel-5.x": "^1.4.0",
