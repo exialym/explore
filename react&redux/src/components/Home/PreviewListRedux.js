@@ -29,12 +29,13 @@ function previewList(state = initialState, action) {
       };
     }
     case LOAD_ARTICLES_SUCCESS: {
+      //let res = action.payload;
       return {
         ...state,
         loading: false,
         error: false,
-        articleList: action.payload.articleList,
-      };
+        articleList: action.payload
+      }
     }
     case LOAD_ARTICLES_ERROR: {
       return {
