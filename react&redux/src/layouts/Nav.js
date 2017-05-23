@@ -8,6 +8,7 @@ class Nav extends Component {
     return (
       <nav>
         <Link to="/">Home</Link>
+        <Link to="/search">Search</Link>
         {/*<Link to="/detail/1">Detail</Link>*/}
       </nav>
     );
