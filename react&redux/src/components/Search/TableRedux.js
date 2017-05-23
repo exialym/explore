@@ -8,6 +8,13 @@ export function loadArticlesForSearch(query) {
     query,
   };
 }
+export function deleteArticle(record) {
+  return {
+    url: '../src/api/articles.json',
+    types: ['LOAD_ARTICLES_FOR_SEARCH', 'LOAD_ARTICLES_FOR_SEARCH_SUCCESS', 'LOAD_ARTICLES_FOR_SEARCH_ERROR'],
+    query:record.title,
+  };
+}
 // TableRedux.js
 const initialState = {
   articles: [],
@@ -23,6 +30,9 @@ export function changeQuery(e) {
     },
   };
 }
+//按理说action creater应该返回一个带type属性的对象
+//这里之所以返回了一个函数，是因为redux-thunk这个中间件
+// 它允许你先对逻辑进行一些处理，异步的或同步的，然后手动触发一个原生的dispatch
 export function search() {
   return (dispatch, getState) => {
     const { query } = getState().articles.table;

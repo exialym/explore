@@ -1,19 +1,21 @@
 /**
  * Created by exialym on 2017/5/23 0023.
  */
+
 import React, { Component, PropTypes } from 'react';
 import { Modal } from 'antd';
 import { createForm } from 'redux-form-utils';
 import formConfig from './Modal.config';
+
 @createForm(formConfig)
-class ArticleModal extends Component {
+export default class ArticleModal extends Component {
   render() {
-    const { title, desc, date } = this.props.fields;
+    const { title, description, date } = this.props.fields;
     return (
       <Modal
-        isVisible={this.props.isVisible}
-        onCancel={this.props.onCancel}
-        onOk={this.props.onOk}
+        visible={this.props.visible}
+        onCancel={this.props.hideModal}
+        onOk={this.props.addArticle}
       >
         <div className="form">
           <div className="control-group">
@@ -22,17 +24,14 @@ class ArticleModal extends Component {
           </div>
           <div className="control-group">
             <label>描述</label>
-            <textarea {...desc} />
+            <textarea {...description} />
           </div>
           <div className="control-group">
-            <label>݀日期</label>
+            <label>发布日期</label>
             <input type="date" {...date} />
           </div>
         </div>
-        <button onClick={this.props.onOk}>确认</button>
-        <button onClick={this.props.onCancel}>取消</button>
       </Modal>
     );
   }
 }
-export default ArticleModal;
