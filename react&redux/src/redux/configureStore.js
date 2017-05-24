@@ -16,12 +16,29 @@ const FetchMiddleware = createFetchMiddleware({
     });
   },
 });
+//包装每个reducer，使其计算每个reducer执行的时间，看看哪个超时了
+//这里就是把所有reducer函数读出来，外部又包了一个reducer存回去
+function logSlowReducers(reducers, thresholdInMs = 8) {
+  Object.keys(reducers).forEach((name) => {
+    const originalReducer = reducers[name];
+    reducers[name] = (state, action) => {
+      const start = Date.now();
+      const result = originalReducer(state, action);
+      const diffInMs = Date.now() - start;
+      if (diffInMs >= thresholdInMs) {
+        console.warn(`Reducer ${name} took ${diffInMs} ms for ${action.type}`);
+      }
+      return result;
+    };
+  });
+  return reducers;
+}
 const finalCreateStore = compose(
   applyMiddleware(ThunkMiddleware,FetchMiddleware)
 )(createStore);
-const reducer = combineReducers(Object.assign({}, rootReducer, {
+const reducer = combineReducers(logSlowReducers(Object.assign({}, rootReducer, {
   routing: routerReducer,
-}));
+}),1));
 export default function configureStore(initialState) {
   const store = finalCreateStore(reducer, initialState);
   return store;

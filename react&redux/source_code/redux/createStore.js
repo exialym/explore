@@ -27,4 +27,45 @@ function createStore(reducer, initialState, enhancer) {
   function getState() {
     return currentState
   }
+  function subscribe(listener) {
+    listeners.push(listener)
+    var isSubscribed = true
+    return function unsubscribe() {
+      if (!isSubscribed) {
+        return
+      }
+      isSubscribed = false
+      var index = listeners.indexOf(listener)
+      listeners.splice(index, 1)
+    }
+  }
+  function dispatch(action) {
+    if (!isPlainObject(action)) {
+      throw new Error(
+        'Actions must be plain objects. ' +
+        'Use custom middleware for async actions.'
+      )
+    }
+    if (typeof action.type === 'undefined') {
+      throw new Error(
+        'Actions may not have an undefined "type" property. ' +
+        'Have you misspelled a constant?'
+      )
+    }
+    if (isDispatching) {
+      throw new Error('Reducers may not dispatch actions.')
+    }
+    try {
+      isDispatching = true
+      currentState = currentReducer(currentState, action)
+    } finally {
+      isDispatching = false
+    }
+    listeners.slice().forEach(listener => listener())
+    return action
+  }
+  function replaceReducer(nextReducer) {
+    currentReducer = nextReducer
+    dispatch({ type: ActionTypes.INIT })
+  }
 }

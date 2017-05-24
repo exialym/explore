@@ -4,23 +4,26 @@
 
 /*************tree diff*********/
 // 通过updateDepth对Virtual DOM树进行层级控制，只对相同层级的DOM节点进行比较
-updateChildren: function(nextNestedChildrenElements, transaction, context) {
-  updateDepth++;
-  var errorThrown = true;
-  try {
-    this._updateChildren(nextNestedChildrenElements, transaction, context);
-    errorThrown = false;
-  } finally {
-    updateDepth--;
-    if (!updateDepth) {
-      if (errorThrown) {
-        clearQueue();
-      } else {
-        processQueue();
+const treeDiff = {
+  updateChildren: function(nextNestedChildrenElements, transaction, context) {
+    updateDepth++;
+    var errorThrown = true;
+    try {
+      this._updateChildren(nextNestedChildrenElements, transaction, context);
+      errorThrown = false;
+    } finally {
+      updateDepth--;
+      if (!updateDepth) {
+        if (errorThrown) {
+          clearQueue();
+        } else {
+          processQueue();
+        }
       }
     }
   }
-}
+};
+
 
 
 /**************element diff*********/
@@ -57,58 +60,83 @@ function makeRemove(child, node) {
 }
 
 /**************diff算法的核心*********/
-_updateChildren: function(nextNestedChildrenElements, transaction, context) {
-  var prevChildren = this._renderedChildren;
-  var removedNodes = {};
-  var nextChildren = this._reconcilerUpdateChildren(prevChildren, nextNestedChildrenElements,
-    removedNodes, transaction, context);
-  if (!nextChildren && !prevChildren) {
-    return;
-  }
-  var updates = null;
-  var name;
-  var lastIndex = 0;
-  var nextIndex = 0;
-  var lastPlacedNode = null;
-  //遍历新的节点集合
-  for (name in nextChildren) {
-    if (!nextChildren.hasOwnProperty(name)) {
-      continue;
+const diff = {
+  _updateChildren: function(nextNestedChildrenElements, transaction, context) {
+    var prevChildren = this._renderedChildren;
+    var removedNodes = {};
+    var nextChildren = this._reconcilerUpdateChildren(prevChildren, nextNestedChildrenElements,
+      removedNodes, transaction, context);
+    if (!nextChildren && !prevChildren) {
+      return;
     }
-    var prevChild = prevChildren && prevChildren[name];
-    var nextChild = nextChildren[name];
-    if (prevChild === nextChild) {
-      updates = enqueue(
-        updates,
-        this.moveChild(prevChild, lastPlacedNode, nextIndex, lastIndex)
-      );
-      lastIndex = Math.max(prevChild._mountIndex, lastIndex);
-      prevChild._mountIndex = nextIndex;
-    } else {
-      if (prevChild) {
-        lastIndex = Math.max(prevChild._mountIndex, lastIndex);
+    var updates = null;
+    var name;
+    var lastIndex = 0;
+    var nextIndex = 0;
+    var lastPlacedNode = null;
+    //遍历新的节点集合
+    for (name in nextChildren) {
+      if (!nextChildren.hasOwnProperty(name)) {
+        continue;
       }
-      updates = enqueue(
-        updates,
-        this._mountChildAtIndex(nextChild, lastPlacedNode, nextIndex, transaction, context)
-      );
+      var prevChild = prevChildren && prevChildren[name];
+      var nextChild = nextChildren[name];
+      if (prevChild === nextChild) {
+        updates = enqueue(
+          updates,
+          this.moveChild(prevChild, lastPlacedNode, nextIndex, lastIndex)
+        );
+        lastIndex = Math.max(prevChild._mountIndex, lastIndex);
+        prevChild._mountIndex = nextIndex;
+      } else {
+        if (prevChild) {
+          lastIndex = Math.max(prevChild._mountIndex, lastIndex);
+        }
+        updates = enqueue(
+          updates,
+          this._mountChildAtIndex(nextChild, lastPlacedNode, nextIndex, transaction, context)
+        );
+      }
+      nextIndex++;
+      lastPlacedNode = ReactReconciler.getNativeNode(nextChild);
     }
-    nextIndex++;
-    lastPlacedNode = ReactReconciler.getNativeNode(nextChild);
-  }
-  for (name in removedNodes) {
-    if (removedNodes.hasOwnProperty(name)) {
-      updates = enqueue(
-        updates,
-        this._unmountChild(prevChildren[name], removedNodes[name])
-      );
+    for (name in removedNodes) {
+      if (removedNodes.hasOwnProperty(name)) {
+        updates = enqueue(
+          updates,
+          this._unmountChild(prevChildren[name], removedNodes[name])
+        );
+      }
     }
-  }
-  if (updates) {
-    processQueue(this, updates);
-  }
-  this._renderedChildren = nextChildren;
-},
+    if (updates) {
+      processQueue(this, updates);
+    }
+    this._renderedChildren = nextChildren;
+  },
+
+  moveChild: function(child, afterNode, toIndex, lastIndex) {
+    if (child._mountIndex < lastIndex) {
+      return makeMove(child, afterNode, toIndex);
+    }
+  },
+  createChild: function(child, afterNode, mountImage) {
+    return makeInsertMarkup(mountImage, afterNode, child._mountIndex);
+  },
+  removeChild: function(child, node) {
+    return makeRemove(child, node);
+  },
+  _unmountChild: function(child, node) {
+    var update = this.removeChild(child, node);
+    child._mountIndex = null;
+    return update;
+  },
+  _mountChildAtIndex: function(child, afterNode, index, transaction, context) {
+    var mountImage = ReactReconciler.mountComponent(child, transaction, this, this._nativeContainerInfo,
+      context);
+    child._mountIndex = index;
+    return this.createChild(child, afterNode, mountImage);
+  },
+};
 function enqueue(queue, update) {
   if (update) {queue = queue || [];
     queue.push(update);
@@ -122,33 +150,10 @@ function processQueue(inst, updateQueue) {
   );
 }
 
-moveChild: function(child, afterNode, toIndex, lastIndex) {
-  if (child._mountIndex < lastIndex) {
-    return makeMove(child, afterNode, toIndex);
-  }
-},
-createChild: function(child, afterNode, mountImage) {
-  return makeInsertMarkup(mountImage, afterNode, child._mountIndex);
-},
-removeChild: function(child, node) {
-  return makeRemove(child, node);
-},
-_unmountChild: function(child, node) {
-  var update = this.removeChild(child, node);
-  child._mountIndex = null;
-  return update;
-},
-_mountChildAtIndex: function(child, afterNode, index, transaction, context) {
-  var mountImage = ReactReconciler.mountComponent(child, transaction, this, this._nativeContainerInfo,
-    context);
-  child._mountIndex = index;
-  return this.createChild(child, afterNode, mountImage);
-},
-
 
 /**************Patch*********/
 // 将Virtual DOM的变化更新到真实DOM上的方法
-processUpdates: function(parentNode, updates) {
+function  processUpdates(parentNode, updates) {
   //遍历更新队列
   for (var k = 0; k < updates.length; k++) {
     var update = updates[k];
@@ -188,7 +193,7 @@ processUpdates: function(parentNode, updates) {
         break;
     }
   }
-},
+}
 function getNodeAfter(parentNode, node) {
   if (Array.isArray(node)) {
     node = node[1];
