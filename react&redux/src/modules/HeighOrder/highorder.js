@@ -22,8 +22,8 @@ class HighOrder extends Component {
 const MyContainer = (WrappedComponent) =>
   class extends Component {
     proc(wrappedComponentInstance) {
-      //调用WrappedComponent实例的方法
-      wrappedComponentInstance.demoMethod();
+      //调用WrappedComponent实例的方法,当引入Redux后，这里wrappedComponentInstance会是null，为啥
+      //wrappedComponentInstance.demoMethod();
     }
     render() {
       //我们可以通过高阶组件像里面的组件传递props
