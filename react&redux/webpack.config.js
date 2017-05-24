@@ -8,10 +8,10 @@ module.exports = {
     publicPath: '/build/'
   },
   module: {
-    loaders: [{
-      test: /\.js$/,
-      include: path.join(__dirname, 'src'),
-      loader: 'babel'
-    }]
+    loaders: [
+      { test: /\.js$/,
+        exclude: /node_modules/,
+        loader: 'babel-loader?presets[]=es2015&presets[]=react&presets[]=stage-0&plugins[]=transform-object-rest-spread&plugins[]=transform-decorators-legacy' }
+    ]
   }
 };

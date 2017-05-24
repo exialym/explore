@@ -9,6 +9,7 @@ class Nav extends Component {
       <nav>
         <Link to="/">Home</Link>
         <Link to="/search">Search</Link>
+        <Link to="/test">ReactTest</Link>
         {/*<Link to="/detail/1">Detail</Link>*/}
       </nav>
     );
