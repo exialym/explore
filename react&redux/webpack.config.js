@@ -11,7 +11,15 @@ module.exports = {
     loaders: [
       { test: /\.js$/,
         exclude: /node_modules/,
-        loader: 'babel-loader?presets[]=es2015&presets[]=react&presets[]=stage-0&plugins[]=transform-object-rest-spread&plugins[]=transform-decorators-legacy' }
+        loader: 'babel-loader?presets[]=es2015&presets[]=react&presets[]=stage-0&plugins[]=transform-object-rest-spread&plugins[]=transform-decorators-legacy'
+      },
+      {
+        test: /\.(png|jpg)$/,
+        loader: 'url-loader?limit=8192'
+      }
+    ],
+    postLoaders: [
+      { loader: "transform?brfs" }
     ]
   }
 };

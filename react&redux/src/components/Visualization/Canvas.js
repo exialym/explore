@@ -3,6 +3,7 @@
  */
 var React = require('react');
 var ReactCanvas = require('react-canvas');
+var imgUrl = require('../../../build/enzo.jpg');
 
 var Surface = ReactCanvas.Surface;
 var Image = ReactCanvas.Image;
@@ -18,9 +19,9 @@ var Canvas = React.createClass({
 
     return (
       <Surface width={surfaceWidth} height={surfaceHeight} left={0} top={0}>
-        <Image style={imageStyle} src='...' />
+        <Image style={imageStyle} src={imgUrl} />
         <Text style={textStyle}>
-          Here is some text below an image.
+          Here is some text below an image. Printed by canvas.
         </Text>
       </Surface>
     );
