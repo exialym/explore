@@ -54,4 +54,16 @@ ul {
   background-color: #00C49F;
   z-index: 1; }
 
+svg > path {
+  stroke: #ff7300;
+  stroke-dasharray: 2401px 2401px;
+  stroke-dashoffset: 0; }
+
+.logo-appear path {
+  stroke-dashoffset: -2401px; }
+
+.logo-appear-active path {
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 4s ease 1s; }
+
 /*# sourceMappingURL=style.css.map */
