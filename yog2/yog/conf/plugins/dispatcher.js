@@ -40,6 +40,8 @@ module.exports.dispatcher = {
      ***************************************************************************/
 
     rootRouter: function (router) {
+      //直接配置project的根路由，这里将／custom也指向了home app
+      router.use('/custom', yog.dispatcher.router('home'));
 
     },
     /**
