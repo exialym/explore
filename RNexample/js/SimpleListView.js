@@ -99,7 +99,8 @@ const styles = StyleSheet.create({
   row: {
     padding: 15,
     marginBottom: 5,
-    backgroundColor: 'skyblue',
+    backgroundColor: '#2fa2ff',
+    color:'white',
   },
 
 });

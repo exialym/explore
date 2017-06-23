@@ -60,7 +60,7 @@ export default class RNexample extends Component {
 
   render() {
     return (
-      <TabBarIOS unselectedTintColor="yellow" tintColor="white" barTintColor="darkslateblue">
+      <TabBarIOS>
         <TabBarIOS.Item
           systemIcon="contacts"
           selected={this.state.selectedTab === 'contacts'}
