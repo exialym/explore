@@ -1,25 +1,35 @@
-module.exports = function(router){
-    // you can add app common logic here
-    // router.use(function(req, res, next){
-    // });
+export default function (router) {
+  //这里定义了app级别的路由处理
+  //这里给请求和响应设置了相应的userid
+  router.use((req, res, next) => {
+    let userId = req.cookies.userId;
+    if (!userId) {
+      userId = Math.round(Date.now() + Math.random() * 100);
+      res.cookie('userId', userId);
+    }
+    req.userId = userId;
+    next();
+  });
 
-    // also you can add custom action
-    // require /spa/some/hefangshi
-    // router.get('/some/:user', router.action('api'));
-    
-    // or write action directly
-    // router.get('/some/:user', function(res, req){});
-
-    // a restful api example
-    router.route('/book')
-        // PUT /home/book
-        .put(router.action('book').put)
-        // GET /home/book
-        .get(router.action('book'));
-
-    router.route('/book/:id')
-        // GET /home/book/1
-        .get(router.action('book').get)
-        // DELETE /home/book/1
-        .delete(router.action('book').delete);
+  //这里对属于api的请求定义了错误处理方法
+  router.use((req, res, next) => {
+    res.api = function (data, errno, msg) {
+      if (errno === undefined) {
+        errno = 0;
+      }
+      res.json({
+        errno,
+        data,
+        msg
+      });
+    };
+    next();
+  });
+  console.log('new version')
+  //对api类的路由进行特殊的定义，其余的按照yog2的默认规则直接识别到action文件夹下对应的js文件
+  router.delete('/api/todos/:id([0-9]+)$', router.action('api/todos').del);
+  router.use('/api/todos/:id([0-9]+)$', router.action('api/todos'));
+  router.use('/api/todos/:id([0-9]+)/complete', router.action('api/todos/complete'));
+  // 可以所有页面使用相同的getInitialState解决初始状态不同步问题
+  // router.all('*', router.action('index'));
 };
