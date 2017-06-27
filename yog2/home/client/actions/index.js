@@ -60,7 +60,7 @@ export function editTodo(id, text) {
 }
 
 export function completeTodo(id) {
-  return axios.put(`/api/todos/${id}/complete`).then(res => {
+  return axios.put(`/api/todos/complete/${id}`).then(res => {
     if (res.data.errno === 0) {
       return {
         type: types.COMPLETE_TODO,

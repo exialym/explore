@@ -7,7 +7,9 @@ import { Provider } from 'react-redux'
 import App from '../../containers/App'
 import configureStore from '../../store/configureStore'
 import { RouterContext } from 'react-router'
-import 'todomvc-app-css/index.css'
+import '../../static/css/index.css'
+import { Layout, Header , Sidebar, Section, Footer } from 'fit-layout-global'
+import Nav from "../../components/Nav";
 
 export default function (state, renderProps) {
   const store = configureStore(state)

@@ -6,7 +6,7 @@ import {
   setTodo,
   deleteTodo
 }
-  from '../../../model/index'
+  from '../../../model/todoService'
 
 export async function post(req, res, next) {
   const ret = await addTodo(req.userId, req.body.text);
@@ -14,11 +14,12 @@ export async function post(req, res, next) {
 }
 
 export async function put(req, res, next) {
-  const ret = await setTodo(req.userId, parseInt(req.params.id, 10), req.body.text);
+  console.log("put")
+  const ret = await setTodo(req.params.id, req.body.text);
   res.api(ret);
 }
 
 export async function del(req, res, next) {
-  const ret = await deleteTodo(req.userId, parseInt(req.params.id, 10));
+  const ret = await deleteTodo(req.params.id);
   res.api(ret);
 }

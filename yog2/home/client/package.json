@@ -19,6 +19,9 @@
   "dependencies": {
     "axios": "^0.12.0",
     "classnames": "^2.1.2",
+    "fit-layout-global": "^3.0.55",
+    "fit-menu": "^3.0.77",
+    "mongoose": "^4.11.0",
     "react": "^0.14.7",
     "react-dom": "^0.14.7",
     "react-redux": "^4.2.1",

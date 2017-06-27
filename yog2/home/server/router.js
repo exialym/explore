@@ -25,11 +25,11 @@ export default function (router) {
     };
     next();
   });
-  console.log('new version')
   //对api类的路由进行特殊的定义，其余的按照yog2的默认规则直接识别到action文件夹下对应的js文件
-  router.delete('/api/todos/:id([0-9]+)$', router.action('api/todos').del);
-  router.use('/api/todos/:id([0-9]+)$', router.action('api/todos'));
-  router.use('/api/todos/:id([0-9]+)/complete', router.action('api/todos/complete'));
+  router.delete('/api/todos/:id', router.action('api/todos').del);
+  router.use('/api/todos/clearCompleted', router.action('api/todos/clearCompleted'));
+  router.use('/api/todos/complete/:id', router.action('api/todos/complete'));
+  router.use('/api/todos/:id', router.action('api/todos'));
   // 可以所有页面使用相同的getInitialState解决初始状态不同步问题
   // router.all('*', router.action('index'));
 };

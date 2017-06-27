@@ -1,7 +1,7 @@
 /**
  * Created by exialym on 2017/6/23.
  */
-export default class FakeRedis {
+export default class FakeRedisTodo {
   constructor() {
     this.db = {};
   }

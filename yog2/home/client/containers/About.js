@@ -8,12 +8,13 @@ import { connect } from 'react-redux'
 import Header from '../components/Header'
 import MainSection from '../components/MainSection'
 
-class About extends Component {
+
+import { Layout, Sidebar, Section } from 'fit-layout-global'
+
+export default class About extends Component {
   render() {
     return (
-      <div>
-        <h1>about</h1>
-      </div>
+      <h1>hello</h1>
     )
   }
 }

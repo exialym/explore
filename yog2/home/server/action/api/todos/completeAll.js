@@ -4,7 +4,7 @@
 import {
   completeAll
 }
-  from '../../../model/index'
+  from '../../../model/todoService'
 
 export async function post(req, res, next) {
   const data = await completeAll(req.userId);

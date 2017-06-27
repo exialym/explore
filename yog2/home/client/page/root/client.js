@@ -7,7 +7,10 @@ import { Provider } from 'react-redux'
 import { browserHistory, hashHistory, Router } from 'react-router'
 import routes from '../../routes/index'
 import configureStore from '../../store/configureStore'
-import 'todomvc-app-css/index.css'
+import '../../static/css/index.css'
+import { Layout, Header , Sidebar, Section, Footer } from 'fit-layout-global'
+import Nav from "../../components/Nav";
+
 
 const store = configureStore(window.__PRELOADED_STATE__)
 render(

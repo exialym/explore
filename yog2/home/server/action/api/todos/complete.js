@@ -4,9 +4,10 @@
 import {
   completeTodo
 }
-  from '../../../model/index'
+  from '../../../model/todoService'
 
 export async function put(req, res, next) {
-  const ret = await completeTodo(req.userId, parseInt(req.params.id, 10));
+  console.log('completeTodo')
+  const ret = await completeTodo(req.params.id);
   res.api(ret);
 }
