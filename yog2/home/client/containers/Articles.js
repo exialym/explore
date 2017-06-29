@@ -6,6 +6,7 @@ import { Component, PropTypes } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import * as ArticleActions from '../actions/articles'
+import ArticleItem from "../components/Articles/ArticleItem";
 
 export default class Articles extends Component {
   componentDidMount() {
@@ -19,14 +20,7 @@ export default class Articles extends Component {
     return (
       <div className="articles">
         {articles.map(article => {
-          return (
-            <div key={article._id} >
-              <h1>{article.title}</h1>
-              <span>{article.detail}</span>
-              <button onClick={()=>actions.deleteArticle(article._id)}>delete</button>
-            </div>
-            )
-
+          return <ArticleItem key={article._id} article={article} actions={actions}/>
         })}
 
       </div>
