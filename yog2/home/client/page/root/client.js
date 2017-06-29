@@ -11,7 +11,7 @@ import '../../static/css/index.css'
 import { Layout, Header , Sidebar, Section, Footer } from 'fit-layout-global'
 import Nav from "../../components/Nav";
 
-
+console.log("PRELOADED_STATE",window.__PRELOADED_STATE__)
 const store = configureStore(window.__PRELOADED_STATE__)
 render(
   <Provider store={store}>

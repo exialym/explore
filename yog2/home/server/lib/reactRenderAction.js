@@ -22,7 +22,9 @@ export default class ReactRenderAction {
       } else if (redirectLocation) {
         res.redirect(302, redirectLocation.pathname + redirectLocation.search)
       } else if (renderProps) {
-        const nsr = req.query.nsr === '1';
+        console.log("req.query.nsr",req.query.nsr)
+        //通过http://localhost:8085?nsr=0访问，就关闭了服务端渲染
+        const nsr = req.query.nsr === '0';
         res.render('home/page/root/index.tpl', {
           initialState: JSON.stringify(initialState),
           ssr: nsr ? '' : Root(initialState, renderProps)

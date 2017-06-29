@@ -4,7 +4,8 @@
 import {
   addTodo,
   setTodo,
-  deleteTodo
+  deleteTodo,
+  getTodos
 }
   from '../../../model/todoService'
 
@@ -21,5 +22,9 @@ export async function put(req, res, next) {
 
 export async function del(req, res, next) {
   const ret = await deleteTodo(req.params.id);
+  res.api(ret);
+}
+export async function get(req, res, next) {
+  const ret = await getTodos(req.userId);
   res.api(ret);
 }

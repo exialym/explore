@@ -11,8 +11,16 @@ import * as TodoActions from '../actions'
 import { Link } from 'react-router'
 
 class App extends Component {
+  componentDidMount() {
+    const { todos, actions } = this.props
+
+    if (todos.length===0) {
+      actions.getTodos()
+    }
+  }
   render() {
     const { todos, actions } = this.props
+    console.log(todos)
     return (
       <div className="todoapp">
         <Header addTodo={actions.addTodo} />

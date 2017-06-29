@@ -7,6 +7,7 @@ import {
   EDIT_TODO,
   COMPLETE_TODO,
   COMPLETE_ALL,
+  GET_TODO,
   CLEAR_COMPLETED
 } from '../constants/ActionTypes'
 
@@ -45,7 +46,11 @@ export default function todos(state = [], action) {
 
     case CLEAR_COMPLETED:
       return state.filter(todo => todo.completed === false);
-
+    case GET_TODO:
+      return [
+        ...action.todos,
+        ...state,
+      ]
     default:
       return state
   }

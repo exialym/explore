@@ -6,12 +6,9 @@ import TodoDB from './db/todo'
 
 export async function getTodos(userId) {
   let ret = await TodoDB.getByUser(userId);
-  if (ret === undefined) {
-    await setTodo({
-      text: 'Use Redux',
-      completed: false,
-      userId
-    });
+  console.log('getTodosCCC',ret)
+  if (ret.length === 0) {
+    await setTodo(null, 'Use Redux', userId);
     ret = await TodoDB.getByUser(userId);
   }
   return ret;
@@ -34,11 +31,22 @@ export async function addTodo(userId, text) {
   return await TodoDB.save(todo)
 }
 
-export async function setTodo(id, text) {
-  const todo = await getTodo(id);
-  todo.text = text;
-  await TodoDB.save(todo)
-  return todo
+export async function setTodo(id, text, userId) {
+  if (id) {
+    const todo = await getTodo(id);
+    todo.text = text;
+    await TodoDB.save(todo)
+    return todo
+  } else {
+    const todo = {
+      text,
+      completed: false,
+      userId
+    }
+    await TodoDB.save(todo)
+    return todo
+  }
+
 }
 
 export async function completeTodo(id) {

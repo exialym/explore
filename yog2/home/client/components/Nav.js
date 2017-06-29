@@ -9,9 +9,9 @@ class Nav extends Component {
   render() {
     return (
       <Menu>
-        <MenuItem brand
-                  inverse to="/">todos</MenuItem>
-        <MenuItem to="/about">about</MenuItem>
+        <MenuItem brand inverse to="/">todos</MenuItem>
+        <MenuItem to="/articles">Articles</MenuItem>
+        <MenuItem to="/about">About</MenuItem>
       </Menu>
     )
   }

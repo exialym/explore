@@ -22,6 +22,23 @@ export function addTodo(text) {
   })
 }
 
+export function getTodos() {
+  return axios.get('/api/todos')
+    .then(res => {
+    if (res.data.errno === 0) {
+      return {
+        type: types.GET_TODO,
+        todos: res.data.data
+      }
+    }
+    else {
+      return showError(res.data.msg);
+    }
+  }).catch(error => {
+    return showError(`request ${error.config.url} ${error.statusText}`);
+  })
+}
+
 export function deleteTodo(id) {
   return axios.delete(`/api/todos/${id}`, {
     id

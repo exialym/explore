@@ -6,10 +6,13 @@ import { Router, Route, Link, IndexRoute } from 'react-router'
 import App from '../containers/App'
 import MainPage from '../containers/MainPage'
 import About from '../containers/About'
+import Articles from '../containers/Articles'
+
 
 export default (
   <Route path="/" component={MainPage}>
     <IndexRoute component={App}/>
     <Route path="/about" component={About} />
+    <Route path="/articles" component={Articles} />
   </Route>
 )
