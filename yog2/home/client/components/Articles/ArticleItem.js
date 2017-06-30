@@ -18,7 +18,7 @@ class ArticleItem extends Component {
   render() {
     const {article,actions} = this.props
     return (
-      <divkey={article._id}>
+      <div>
         <h1>{article.title}</h1>
         <span>{article.detail}</span>
         <button onClick={()=>actions.deleteArticle(article._id)}>delete</button>
